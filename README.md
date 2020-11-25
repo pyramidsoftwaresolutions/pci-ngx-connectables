@@ -3,7 +3,7 @@ An angular 4+ solution providing reusable components to render SOURCE and TARGET
 One to one, One to Many, Many to Many mappings are allowed. 
 Specially created to fulfill a requirement but wanted to help others with similar requirements as such implementations are rare for angular.
 
-[[https://github.com/pyramidsoftwaresolutions/pci-ngx-connectables/pci-ngx-connectables.png|alt=pci-ngx-connectables]]
+[[https://github.com/pyramidsoftwaresolutions/pci-ngx-connectables/blob/main/pci-ngx-connectables.png|alt=pci-ngx-connectables]]
 
 ## Dependency javascrip libraries used from
 https://anseki.github.io/leader-line/#outline
