@@ -8,8 +8,8 @@ declare var AnimEvent: any;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-
+export class AppComponent implements AfterViewInit {
+  @ViewChild('mapItemsContainerComponent') mapItemsContainerComponent;
   sourceItems: ConnectableItemModel[] = [];
   targetItems: ConnectableItemModel[] = [];
   mappedItems: MappedSourceTargetItem[] = [];
@@ -28,5 +28,9 @@ export class AppComponent {
     this.mappedItems.push(new MappedSourceTargetItem(this.sourceItems[1], this.targetItems[2]));
     this.mappedItems.push(new MappedSourceTargetItem(this.sourceItems[3], this.targetItems[2]));
     this.mappedItems.push(new MappedSourceTargetItem(this.sourceItems[4], this.targetItems[0]));
+  }
+  
+  ngAfterViewInit():void{
+    this.mapItemsContainerComponent.init();
   }
 }
