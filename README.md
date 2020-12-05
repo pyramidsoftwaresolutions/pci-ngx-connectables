@@ -43,6 +43,16 @@ mappedItems: MappedSourceTargetItem[] = [];
 - source: A ConnectableItemModel that will represent the mapping with target. this will initialize the connector line on load of view
 - target: A ConnectableItemModel that will represent the mapping with source. this will initialize the connector line on load of view
 
+##ngAfterViewInit
+The renderings of lines cannot be performed during ngOnInit of angular component. It has to be done on or after ngAfterViewInit.
+
+##Handling line rendering in dialog windows
+- Ensure that the lines are re positioned after dialog window is opened. You have to ensure the following line is executed in the items.container.component
+  this.mappedLines.forEach(l=>l.line.position());
+
+- Next, ensure that the following CSS is applied to the leader lines drawn
+  .leader-line{ z-index:9999; }
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
