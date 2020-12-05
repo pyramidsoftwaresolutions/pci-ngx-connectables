@@ -18,6 +18,7 @@ Reusable components available in the folder "pci-connectables".
 ## Steps you should follow
 1. Don't miss to include the "assets/pci-connectables" folder containing JS libraries and css
 2. Don't miss to include the files in "angular.json" as done in the application.
+In case of angular 4/5 where angular.json is not supported, you have to include those css and js files mentioned in angular.js to your index.html
 
 ## How to use
 <div class="content">
@@ -39,19 +40,19 @@ mappedItems: MappedSourceTargetItem[] = [];
 - displayText: option to above. if provided, will render the text in the item box
 - color: a string which represents HTML color name or code. this will be used to render the arrow color for the item. otherwise default.
 
-##MappedSourceTargetItem
+## appedSourceTargetItem
 - source: A ConnectableItemModel that will represent the mapping with target. this will initialize the connector line on load of view
 - target: A ConnectableItemModel that will represent the mapping with source. this will initialize the connector line on load of view
 
-##ngAfterViewInit
+## ngAfterViewInit
 The renderings of lines cannot be performed during ngOnInit of angular component. It has to be done on or after ngAfterViewInit.
 
-##Handling line rendering in dialog windows
+## Handling line rendering in dialog windows
 - Ensure that the lines are re positioned after dialog window is opened. You have to ensure the following line is executed in the items.container.component
-  this.mappedLines.forEach(l=>l.line.position());
+  -- this.mappedLines.forEach(l=>l.line.position());
 
 - Next, ensure that the following CSS is applied to the leader lines drawn
-  .leader-line{ z-index:9999; }
+  -- .leader-line{ z-index:9999; }
 
 ## Development server
 
