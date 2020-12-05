@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, ElementRef, Input } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input } from '@angular/core';
 import { ConnectableItemModel, PairItemModel, MappedLineAndPairItem, MappedSourceTargetItem } from '../common/models/item.model';
 declare var LeaderLine: any;
 declare var AnimEvent: any;
@@ -8,7 +8,7 @@ declare var AnimEvent: any;
   templateUrl: './items.container.component.html',
   styleUrls: ['items.container.component.scss']
 })
-export class ItemsContainerComponent implements AfterViewInit {
+export class ItemsContainerComponent {
   @Input() sourceItems: ConnectableItemModel[] = [];
   @Input() targetItems: ConnectableItemModel[] = [];
   @Input() mappedItems: MappedSourceTargetItem[]=[];
