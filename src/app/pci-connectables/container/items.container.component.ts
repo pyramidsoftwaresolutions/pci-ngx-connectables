@@ -60,7 +60,8 @@ export class ItemsContainerComponent implements AfterViewInit {
     this.mappedLines.push(new MappedLineAndPairItem(line, source, target));
   }
 
-  ngAfterViewInit() {
+  /**call this function from consumer components */
+  public init():void {
     var ____this = this;
     this.scrollableBox.nativeElement.addEventListener(
       'scroll',
@@ -73,7 +74,7 @@ export class ItemsContainerComponent implements AfterViewInit {
     this.initializeMappedLinks();
   }
 
-  initializeMappedLinks(){
+  private initializeMappedLinks():void{
     this.mappedItems.forEach(mi=>{
       let srcItem:PairItemModel = this.leftContainers.find(lc=>lc.item == mi.source);
       let trgItem:PairItemModel = this.rightContainers.find(rc=>rc.item==mi.target);
@@ -81,6 +82,7 @@ export class ItemsContainerComponent implements AfterViewInit {
         this.drawConnectors(srcItem, trgItem);
       }
     });
+    this.mappedLines.forEach((l) => l.line.position());
   }
 
   onSourceSelected(arg:{item:ConnectableItemModel, element:HTMLElement}){
@@ -104,6 +106,7 @@ export class ItemsContainerComponent implements AfterViewInit {
       this.selectedSource.forEach(src=>{
         this.drawConnectors(src, arg);
       });
+      this.mappedLines.forEach((l) => l.line.position());
     }  
     arg.item.__isSelected=true;  
   }
