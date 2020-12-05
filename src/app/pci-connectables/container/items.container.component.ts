@@ -5,7 +5,8 @@ declare var AnimEvent: any;
 
 @Component({
   selector: 'pci-connectables-container',
-  templateUrl: './items.container.component.html'
+  templateUrl: './items.container.component.html',
+  styleUrls: ['items.container.component.scss']
 })
 export class ItemsContainerComponent implements AfterViewInit {
   @Input() sourceItems: ConnectableItemModel[] = [];
@@ -43,7 +44,7 @@ export class ItemsContainerComponent implements AfterViewInit {
       mappedItem.line.remove();
     }
   }
-
+  
   private drawConnectors(source:PairItemModel, target:PairItemModel) {
     const line = new LeaderLine(
       source.element,
@@ -58,6 +59,11 @@ export class ItemsContainerComponent implements AfterViewInit {
       line.color = source.item.color;
     }
     this.mappedLines.push(new MappedLineAndPairItem(line, source, target));
+  }
+  
+  /**call this function from consumer on destroy or closing */
+  public removeLines():void{
+    this.mappedLines.forEach((l) => l.line.position());
   }
 
   /**call this function from consumer components */
