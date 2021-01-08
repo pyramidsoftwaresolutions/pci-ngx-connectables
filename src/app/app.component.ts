@@ -17,6 +17,10 @@ export class AppComponent implements AfterViewInit {
     'red', 'green', 'blue', 'orange', 'purple'
   ];
 
+  get bodyYOffset(): number {
+    return window.pageYOffset;
+  }
+  
   constructor() {
     let connectorCount = 5;
     for (var x = 0; x < connectorCount; x++) {
