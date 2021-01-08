@@ -1,10 +1,26 @@
 <div class="content">
-  <pci-connectables-container #mapItemsContainerComponent
-  [sourceItems]="sourceItems"
-  [targetItems]="targetItems"
-  [mappedItems]="mappedItems"
-  [sourceSelectionMode]="'Single'"
-  [targetSelectionMode]="'Single'"
-  [pageXOffset]="0"
-  [pageYOffset]="bodyYOffset"></pci-connectables-container>
+  <button id="myBtn" (click)="showModal()">Show in Modal Dialog</button>
+</div>
+
+<!-- The Modal -->
+<div #myModal class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" (click)="closeModal()">&times;</span>
+      <h2>Modal Header</h2>
+    </div>
+    <div class="modal-body">
+      <pci-connectables-container
+        #pciConnectablesContainer
+        [sourceItems]="sourceItems"
+        [targetItems]="targetItems"
+        [mappedItems]="mappedItems"
+        [sourceSelectionMode]="'Single'"
+        [targetSelectionMode]="'Single'"
+        [pageXOffset]="0"
+        [pageYOffset]="bodyYOffset"
+      ></pci-connectables-container>
+    </div>
+  </div>
 </div>
