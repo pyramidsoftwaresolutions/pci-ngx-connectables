@@ -1,8 +1,18 @@
-<div class="card" [ngClass]="{'pci-connectable-selected':item.__isSelected}"
-     #draggable pci-draggable pci-connectable 
-    (click)="onItemSelected($event)">
-    <!-- <div class="left-connector-handle" *ngIf="drawLeftHandle"></div> -->
-    <p *ngIf="item.displayDataField!==undefined">{{item.data[item.displayDataField]}}</p>
-    <p *ngIf="item.displayText!==undefined">{{item.displayText}}</p>
-    <!-- <div class="right-connector-handle" *ngIf="!drawLeftHandle"></div> -->
+<div
+  class="card"
+  [ngClass]="{ 'pci-connectable-selected': item.__isSelected }"
+  #draggable
+  pci-draggable
+  pci-connectable
+  (click)="onItemSelected($event)"
+>
+  <div class="remove-item" *ngIf="showRemove && item.__isMapped">
+    <a (click)="removeLink(item)">X</a>
+  </div>
+  <!-- <div class="left-connector-handle" *ngIf="drawLeftHandle"></div> -->
+  <p *ngIf="item.displayDataField !== undefined">
+    {{ item.data[item.displayDataField] }}
+  </p>
+  <p *ngIf="item.displayText !== undefined">{{ item.displayText }}</p>
+  <!-- <div class="right-connector-handle" *ngIf="!drawLeftHandle"></div> -->
 </div>
