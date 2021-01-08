@@ -1,11 +1,17 @@
-import { Component, ViewChild, ElementRef, Input } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import {
   ConnectableItemModel,
   PairItemModel,
   MappedLineAndPairItem,
   MappedSourceTargetItem,
 } from '../common/models/item.model';
-import { templateJitUrl } from '@angular/compiler';
 declare var LeaderLine: any;
 declare var AnimEvent: any;
 
@@ -15,6 +21,7 @@ declare var AnimEvent: any;
   styleUrls: ['items.container.component.scss'],
 })
 export class ItemsContainerComponent {
+  @Input() id: string = 'id_to_be_passed';
   @Input() sourceItems: ConnectableItemModel[] = [];
   @Input() targetItems: ConnectableItemModel[] = [];
   @Input() mappedItems: MappedSourceTargetItem[] = [];
@@ -22,6 +29,9 @@ export class ItemsContainerComponent {
   @Input() targetSelectionMode: string = 'Single';
   @Input() pageXOffset: number = 0;
   @Input() pageYOffset: number = 0;
+
+  @Output() Mapped: EventEmitter<any> = new EventEmitter<any>();
+
   scrollOffset: { x: number; y: number } = { x: 0, y: 0 };
   //================================
   @ViewChild('scrollableBox') scrollableBox: ElementRef;
@@ -49,27 +59,32 @@ export class ItemsContainerComponent {
   }
 
   onRemove() {
-    this.mappedLines.pop();
-    this.removeLast();
+    let mappedLine = this.mappedLines.pop();
+    if (mappedLine) {
+      this.removeLast(mappedLine);
+    }
   }
 
   private drawConnectors(source: PairItemModel, target: PairItemModel): any {
+    let newLineId = this.id + (this.mappedLines.length + 1).toString();
+
     const line = new LeaderLine(source.element, target.element, {
       startPlug: 'square',
       endPlug: 'arrow',
       size: 2,
       color: source.item.color ? source.item.color : undefined,
       zindex: 9999,
+      containerID: this.id,
+      uniqueLineID: newLineId,
     });
-    if (source.item.color) {
-      //line.color = source.item.color;
-    }
-    this.mappedLines.push(new MappedLineAndPairItem(line, source, target));
+    this.mappedLines.push(
+      new MappedLineAndPairItem(line, source, target, newLineId)
+    );
     return line;
   }
 
   private changeContainerOfLineSvg(isNew?: boolean) {
-    let lines = document.getElementsByClassName('leader-line');
+    let lines = document.getElementsByClassName('leader-line ' + this.id);
     const elmWrapper = this.wrapper.nativeElement;
     const rectWrapper = elmWrapper.getBoundingClientRect();
     // Move to the origin of coordinates as the document
@@ -93,9 +108,9 @@ export class ItemsContainerComponent {
     }
   }
 
-  private removeLast() {
+  private removeLast(line: MappedLineAndPairItem) {
     let lines: HTMLCollectionOf<Element> = document.getElementsByClassName(
-      'leader-line'
+      line.lineId
     );
     const elmWrapper = this.wrapper.nativeElement;
     if (!lines || lines.length === 0) {
@@ -103,11 +118,13 @@ export class ItemsContainerComponent {
     }
     let l = lines[lines.length - 1];
     l.remove();
+    line.target.item.__isMapped = false;
+    line.source.item.__isMapped = false;
   }
 
   private removeAll() {
     let lines: HTMLCollectionOf<Element> = document.getElementsByClassName(
-      'leader-line'
+      'leader-line ' + this.id
     );
     const elmWrapper = this.wrapper.nativeElement;
     if (!lines) {
@@ -115,6 +132,7 @@ export class ItemsContainerComponent {
     }
     for (var x = 0; x < lines.length; x++) {
       let l = lines[x];
+      l.parentNode.removeChild(l);
       l.remove();
     }
   }
@@ -156,6 +174,8 @@ export class ItemsContainerComponent {
       );
       if (srcItem && trgItem) {
         this.drawConnectors(srcItem, trgItem);
+        trgItem.item.__isMapped = true; //indicator
+        srcItem.item.__isMapped = true; //indicator
       }
     });
     this.changeContainerOfLineSvg();
@@ -174,16 +194,38 @@ export class ItemsContainerComponent {
     arg.item.__isSelected = true;
   }
 
-  onTargetSelected(arg: { item: ConnectableItemModel; element: HTMLElement }) {
+  onTargetSelected(arg: PairItemModel) {
     if (this.targetSelectionMode.toLowerCase() == 'single') {
       this.targetItems.forEach((x) => (x.__isSelected = false));
     }
-    if (this.selectedSource && arg.element) {
+    if (this.selectedSource && this.selectedSource.length && arg.element) {
       this.selectedSource.forEach((src) => {
         this.drawConnectors(src, arg);
       });
       this.changeContainerOfLineSvg(true);
+      arg.item.__isSelected = false;
+      arg.item.__isMapped = true; //indicator
+      this.deselectAll();
+      this.Mapped.emit(arg.item);
     }
-    arg.item.__isSelected = true;
+  }
+
+  private deselectAll() {
+    if ((this.selectedSource || []).length > 0) {
+      this.selectedSource.forEach(
+        (argSrc) => (argSrc.item.__isSelected = false)
+      );
+      this.selectedSource.pop();
+    }
+  }
+
+  /**remove links associated to the clicked target item */
+  onItemLinkMapRemove(arg: PairItemModel) {
+    let mappedLinesToRemove = this.mappedLines.filter(
+      (ml) => ml.target.element == arg.element
+    );
+    mappedLinesToRemove.forEach((ml) => {
+      this.removeLast(ml);
+    });
   }
 }
