@@ -1,5 +1,14 @@
-import { Component, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
-import { ConnectableItemModel, MappedSourceTargetItem } from './pci-connectables/common/models/item.model';
+import {
+  Component,
+  ViewChild,
+  AfterViewInit,
+  ElementRef,
+  OnDestroy,
+} from '@angular/core';
+import {
+  ConnectableItemModel,
+  MappedSourceTargetItem,
+} from './pci-connectables/common/models/item.model';
 declare var LeaderLine: any;
 declare var AnimEvent: any;
 
@@ -8,32 +17,68 @@ declare var AnimEvent: any;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit {
-  @ViewChild('mapItemsContainerComponent') mapItemsContainerComponent;
+export class AppComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('pciConnectablesContainer1') pciConnectablesContainer1;
+  @ViewChild('pciConnectablesContainer2') pciConnectablesContainer2;
+  @ViewChild('myModal') myModal;
+
   sourceItems: ConnectableItemModel[] = [];
   targetItems: ConnectableItemModel[] = [];
   mappedItems: MappedSourceTargetItem[] = [];
-  colors:string[]=[
-    'red', 'green', 'blue', 'orange', 'purple'
-  ];
+
+  sourceItems2: ConnectableItemModel[] = [];
+  targetItems2: ConnectableItemModel[] = [];
+  mappedItems2: MappedSourceTargetItem[] = [];
+  colors: string[] = ['red', 'green', 'blue', 'orange', 'purple'];
 
   get bodyYOffset(): number {
     return window.pageYOffset;
   }
-  
   constructor() {
-    let connectorCount = 5;
+    let connectorCount = 50;
     for (var x = 0; x < connectorCount; x++) {
-      this.sourceItems.push({ data:{id: x, name: 'Left Option ' + x}, displayDataField:'name', color:this.colors[x]});
-      this.targetItems.push({ data:{id: x, name: 'Right Option ' + x}, displayDataField:'name' });
+      this.sourceItems.push({
+        data: { id: x, name: 'Left Option ' + x },
+        displayDataField: 'name',
+        color: this.colors[x],
+      });
+      this.targetItems.push({
+        data: { id: x, name: 'Right Option ' + x },
+        displayDataField: 'name',
+      });
+
+      this.sourceItems2.push({
+        data: { id: x, name: 'Left Option ' + x },
+        displayDataField: 'name',
+        color: this.colors[x],
+      });
+      this.targetItems2.push({
+        data: { id: x, name: 'Right Option ' + x },
+        displayDataField: 'name',
+      });
     }
 
-    
-    this.mappedItems.push(new MappedSourceTargetItem(this.sourceItems[1], this.targetItems[2]));
-    this.mappedItems.push(new MappedSourceTargetItem(this.sourceItems[3], this.targetItems[2]));
-    this.mappedItems.push(new MappedSourceTargetItem(this.sourceItems[4], this.targetItems[0]));
+    this.mappedItems.push(
+      new MappedSourceTargetItem(this.sourceItems[1], this.targetItems[1])
+    );
+    this.mappedItems.push(
+      new MappedSourceTargetItem(this.sourceItems[3], this.targetItems[2])
+    );
+    this.mappedItems.push(
+      new MappedSourceTargetItem(this.sourceItems[4], this.targetItems[0])
+    );
+    this.mappedItems.push(
+      new MappedSourceTargetItem(this.sourceItems[10], this.targetItems[3])
+    );
+    this.mappedItems.push(
+      new MappedSourceTargetItem(this.sourceItems[49], this.targetItems[45])
+    );
+
+    this.mappedItems2.push(
+      new MappedSourceTargetItem(this.sourceItems2[1], this.targetItems2[1])
+    );
   }
-  
+
   ngAfterViewInit(): void {
     //this.pciConnectablesContainer.init();
   }
@@ -44,13 +89,16 @@ export class AppComponent implements AfterViewInit {
 
   showModal() {
     this.myModal.nativeElement.style.display = 'block';
-    this.pciConnectablesContainer.init();
-    // setTimeout(() => {
-    //   this.pciConnectablesContainer.redraw();
-    // }, 500);
+    this.pciConnectablesContainer1.init();
+    this.pciConnectablesContainer2.init();
   }
   closeModal() {
     this.myModal.nativeElement.style.display = 'none';
-    this.pciConnectablesContainer.removeLines();
+    this.pciConnectablesContainer1.removeLines();
+    this.pciConnectablesContainer2.removeLines();
+  }
+
+  onMapped(item: ConnectableItemModel) {
+    alert(item.data[item.displayDataField]);
   }
 }
