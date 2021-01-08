@@ -11,16 +11,35 @@
       <h2>Modal Header</h2>
     </div>
     <div class="modal-body">
-      <pci-connectables-container
-        #pciConnectablesContainer
-        [sourceItems]="sourceItems"
-        [targetItems]="targetItems"
-        [mappedItems]="mappedItems"
-        [sourceSelectionMode]="'Single'"
-        [targetSelectionMode]="'Single'"
-        [pageXOffset]="0"
-        [pageYOffset]="bodyYOffset"
-      ></pci-connectables-container>
+      <div class="row">
+        <div class="col-md-6">
+          <pci-connectables-container
+            #pciConnectablesContainer1
+            [id]="'tableMap'"
+            [sourceItems]="sourceItems"
+            [targetItems]="targetItems"
+            [mappedItems]="mappedItems"
+            [sourceSelectionMode]="'Single'"
+            [targetSelectionMode]="'Single'"
+            [pageXOffset]="0"
+            [pageYOffset]="bodyYOffset"
+            (Mapped)="onMapped($event)"
+          ></pci-connectables-container>
+        </div>
+        <div class="col-md-6">
+          <pci-connectables-container
+            #pciConnectablesContainer2
+            [id]="'fieldMap'"
+            [sourceItems]="sourceItems2"
+            [targetItems]="targetItems2"
+            [mappedItems]="mappedItems2"
+            [sourceSelectionMode]="'Single'"
+            [targetSelectionMode]="'Single'"
+            [pageXOffset]="0"
+            [pageYOffset]="bodyYOffset"
+          ></pci-connectables-container>
+        </div>
+      </div>
     </div>
   </div>
 </div>
