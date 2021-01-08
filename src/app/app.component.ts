@@ -34,7 +34,23 @@ export class AppComponent implements AfterViewInit {
     this.mappedItems.push(new MappedSourceTargetItem(this.sourceItems[4], this.targetItems[0]));
   }
   
-  ngAfterViewInit():void{
-    this.mapItemsContainerComponent.init();
+  ngAfterViewInit(): void {
+    //this.pciConnectablesContainer.init();
+  }
+
+  ngOnDestroy(): void {
+    //this.pciConnectablesContainer.removeLines();
+  }
+
+  showModal() {
+    this.myModal.nativeElement.style.display = 'block';
+    this.pciConnectablesContainer.init();
+    // setTimeout(() => {
+    //   this.pciConnectablesContainer.redraw();
+    // }, 500);
+  }
+  closeModal() {
+    this.myModal.nativeElement.style.display = 'none';
+    this.pciConnectablesContainer.removeLines();
   }
 }
