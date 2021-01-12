@@ -98,7 +98,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.pciConnectablesContainer2.removeLines();
   }
 
-  onMapped(item: ConnectableItemModel) {
-    alert(item.data[item.displayDataField]);
+  onMapped(arg: {
+    source: ConnectableItemModel;
+    target: ConnectableItemModel;
+  }) {
+    alert(
+      arg.source.data[arg.source.displayDataField] +
+        ' --> ' +
+        arg.target.data[arg.target.displayDataField]
+    );
   }
 }
