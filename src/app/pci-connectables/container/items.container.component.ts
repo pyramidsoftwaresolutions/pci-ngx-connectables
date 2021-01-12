@@ -30,7 +30,13 @@ export class ItemsContainerComponent {
   @Input() pageXOffset: number = 0;
   @Input() pageYOffset: number = 0;
 
-  @Output() Mapped: EventEmitter<any> = new EventEmitter<any>();
+  @Output() Mapped: EventEmitter<{
+    source: ConnectableItemModel;
+    target: ConnectableItemModel;
+  }> = new EventEmitter<{
+    source: ConnectableItemModel;
+    target: ConnectableItemModel;
+  }>();
 
   scrollOffset: { x: number; y: number } = { x: 0, y: 0 };
   //================================
@@ -83,8 +89,7 @@ export class ItemsContainerComponent {
     return line;
   }
 
-  private changeContainerOfLineSvg(isNew?: boolean) {
-    let lines = document.getElementsByClassName('leader-line ' + this.id);
+  initWrapperTransform(): void {
     const elmWrapper = this.wrapper.nativeElement;
     const rectWrapper = elmWrapper.getBoundingClientRect();
     // Move to the origin of coordinates as the document
@@ -94,7 +99,12 @@ export class ItemsContainerComponent {
       'px, -' +
       (rectWrapper.top + this.pageYOffset) +
       'px)';
+  }
 
+  private changeContainerOfLineSvg(isNew?: boolean) {
+    let lines = document.getElementsByClassName('leader-line ' + this.id);
+    const elmWrapper = this.wrapper.nativeElement;
+    //this.initWrapperTransform();
     for (var x = 0; x < lines.length; x++) {
       let lineSvg: any = lines[x];
       if (lineSvg.parentNode != elmWrapper) {
@@ -148,14 +158,19 @@ export class ItemsContainerComponent {
       }),
       false
     );
+    this.initWrapperTransform();
     //assuming that all the items HTML cards must have already rendered
     this.initializeMappedLinks();
   }
 
-  /**call this function from consumer on destroy or on close */
   public removeLines(): void {
     this.mappedLines = [];
     this.removeAll();
+  }
+
+  /**call this function from consumer on destroy or on close */
+  public clear(): void {
+    this.removeLines();
   }
 
   public redraw(): void {
@@ -199,14 +214,17 @@ export class ItemsContainerComponent {
       this.targetItems.forEach((x) => (x.__isSelected = false));
     }
     if (this.selectedSource && this.selectedSource.length && arg.element) {
+      let sourceItem = undefined;
+      let targetItem = arg.item;
       this.selectedSource.forEach((src) => {
         this.drawConnectors(src, arg);
+        sourceItem = src.item;
       });
       this.changeContainerOfLineSvg(true);
       arg.item.__isSelected = false;
       arg.item.__isMapped = true; //indicator
       this.deselectAll();
-      this.Mapped.emit(arg.item);
+      this.Mapped.emit({ source: sourceItem, target: targetItem });
     }
   }
 
